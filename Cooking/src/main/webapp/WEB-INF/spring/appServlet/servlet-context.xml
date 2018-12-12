@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	
+	<!-- MVC 현에 필한 기본 전략들 동 등해주는 설정. -->
+	<mvc:annotation-driven />
+	
+	<!-- 스태틱 리소스들에 한 리 역 리하거나 버전별 리하고 싶 경 한 설정, --> <!-- 스태틱 리소스들에 한 청(context_path/resources/..) 리역 하 리소스 매핑시키는 컨트러 등 -->
+	<mvc:resources mapping="/res/**" location="/resources/" />
+	
+	
+	<!-- DispatcherServlet 매핑 설정 "/" 어는 경, --> <!-- WAS default servlet 매핑 무효가 므, --> <!-- DispatcherServler 내에서 처리할수 없는 청 경, --> <!-- WAS 가 가 default servlet 에게 하기 한 설정. -->
+	<mvc:default-servlet-handler />
+
+	<!-- json 사용하기 위한 설정 -->
+	<bean id="jsonView"
+		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"></bean>
+
+    <!-- 파일 다운로드를 위한 설정 -->
+	<!-- <bean id="" class="kr.or.cook"></bean> -->
+
+	<!-- view 컴포넌트를 특정역 별 리하기 한 ViewResolver 등. -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" 
+			p:prefix="/WEB-INF/views/"
+			p:suffix=".jsp"
+	/>
+	
+	<context:component-scan base-package="kr.or.cook" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	
+	
+	
+	
+</beans>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	
+	<!-- properties를 읽어오기 위한 설정 -->
+	<util:properties id="dbInfo" location="classpath:kr/or/cook/db/dbInfo.properties"  />
+	
+	<!-- DB설정 위에 있는 properties를 읽어들여서 사용-->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" 
+		p:driverClassName="#{dbInfo.driverClassName}"
+		p:url="#{dbInfo.url}"
+		p:username="#{dbInfo.username}"
+		p:password="#{dbInfo.password}"
+		p:initialSize="#{dbInfo.initialSize}"
+		p:maxTotal="#{dbInfo.maxTotal}"
+		p:maxWaitMillis="#{dbInfo.maxWaitMillis}"
+	/>
+
+
+    <!-- mybatis를 사용하기 위한 설정. -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean" 
+		p:mapperLocations="classpath:kr/or/cook/db/mybatis/mappings/*.xml"
+		p:dataSource-ref="dataSource"
+		p:typeAliasesPackage="kr.or.cook.vo"
+	/>
+	
+	<!-- mybatis 템플릿 -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSession"/>
+    </bean> 
+    
+    <!-- kr.or.cook.dao 패키지 안에있는 모든 파일은 Repository로 정하겠다 . ( 이건 오토로 자동으로 잡아주는거  이게 없을 시 구현체에서 리파지토리 등록해주고 해주면됨 -->
+	<mybatis-spring:scan base-package="kr.or.cook.dao" annotation="org.springframework.stereotype.Repository"/>
+	
+</beans>
